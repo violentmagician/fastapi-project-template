@@ -18,9 +18,7 @@ async def list_contents(*, session: Session = ActiveSession):
 
 
 @router.get("/{id_or_slug}/", response_model=ContentResponse)
-async def query_content(
-    *, id_or_slug: Union[str, int], session: Session = ActiveSession
-):
+async def query_content(*, id_or_slug: Union[str, int], session: Session = ActiveSession):
     content = session.query(Content).where(
         or_(
             Content.id == id_or_slug,
@@ -32,9 +30,7 @@ async def query_content(
     return content.first()
 
 
-@router.post(
-    "/", response_model=ContentResponse, dependencies=[AuthenticatedUser]
-)
+@router.post("/", response_model=ContentResponse, dependencies=[AuthenticatedUser])
 async def create_content(
     *,
     session: Session = ActiveSession,
@@ -71,9 +67,7 @@ async def update_content(
     # Check the user owns the content
     current_user: User = get_current_user(request=request)
     if content.user_id != current_user.id and not current_user.superuser:
-        raise HTTPException(
-            status_code=403, detail="You don't own this content"
-        )
+        raise HTTPException(status_code=403, detail="You don't own this content")
 
     # Update the content
     patch_data = patch.dict(exclude_unset=True)
@@ -87,9 +81,7 @@ async def update_content(
 
 
 @router.delete("/{content_id}/", dependencies=[AuthenticatedUser])
-def delete_content(
-    *, session: Session = ActiveSession, request: Request, content_id: int
-):
+def delete_content(*, session: Session = ActiveSession, request: Request, content_id: int):
 
     content = session.get(Content, content_id)
     if not content:
@@ -97,9 +89,7 @@ def delete_content(
     # Check the user owns the content
     current_user = get_current_user(request=request)
     if content.user_id != current_user.id and not current_user.superuser:
-        raise HTTPException(
-            status_code=403, detail="You don't own this content"
-        )
+        raise HTTPException(status_code=403, detail="You don't own this content")
     session.delete(content)
     session.commit()
     return {"ok": True}

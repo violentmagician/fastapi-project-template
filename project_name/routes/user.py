@@ -54,9 +54,7 @@ async def update_user_password(
     # Check the user can update the password
     current_user: User = get_current_user(request=request)
     if user.id != current_user.id and not current_user.superuser:
-        raise HTTPException(
-            status_code=403, detail="You can't update this user password"
-        )
+        raise HTTPException(status_code=403, detail="You can't update this user password")
 
     if not patch.password == patch.password_confirm:
         raise HTTPException(status_code=400, detail="Passwords don't match")
@@ -75,9 +73,7 @@ async def update_user_password(
     response_model=UserResponse,
     dependencies=[AuthenticatedUser],
 )
-async def query_user(
-    *, session: Session = ActiveSession, user_id_or_username: Union[str, int]
-):
+async def query_user(*, session: Session = ActiveSession, user_id_or_username: Union[str, int]):
     user = session.query(User).where(
         or_(
             User.id == user_id_or_username,
@@ -96,18 +92,14 @@ async def my_profile(current_user: User = AuthenticatedUser):
 
 
 @router.delete("/{user_id}/", dependencies=[AdminUser])
-def delete_user(
-    *, session: Session = ActiveSession, request: Request, user_id: int
-):
+def delete_user(*, session: Session = ActiveSession, request: Request, user_id: int):
     user = session.get(User, user_id)
     if not user:
         raise HTTPException(status_code=404, detail="Content not found")
     # Check the user is not deleting himself
     current_user = get_current_user(request=request)
     if user.id == current_user.id:
-        raise HTTPException(
-            status_code=403, detail="You can't delete yourself"
-        )
+        raise HTTPException(status_code=403, detail="You can't delete yourself")
     session.delete(user)
     session.commit()
     return {"ok": True}

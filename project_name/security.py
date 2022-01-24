@@ -108,9 +108,7 @@ def get_password_hash(password) -> str:
     return pwd_context.hash(password)
 
 
-def create_access_token(
-    data: dict, expires_delta: Optional[timedelta] = None
-) -> str:
+def create_access_token(data: dict, expires_delta: Optional[timedelta] = None) -> str:
     to_encode = data.copy()
     if expires_delta:
         expire = datetime.utcnow() + expires_delta
@@ -121,9 +119,7 @@ def create_access_token(
     return encoded_jwt
 
 
-def authenticate_user(
-    get_user: Callable, username: str, password: str
-) -> Union[User, bool]:
+def authenticate_user(get_user: Callable, username: str, password: str) -> Union[User, bool]:
     user = get_user(username)
     if not user:
         return False
@@ -137,9 +133,7 @@ def get_user(username) -> Optional[User]:
         return session.query(User).where(User.username == username).first()
 
 
-def get_current_user(
-    token: str = Depends(oauth2_scheme), request: Request = None
-) -> User:
+def get_current_user(token: str = Depends(oauth2_scheme), request: Request = None) -> User:
     credentials_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
         detail="Could not validate credentials",
@@ -182,9 +176,7 @@ async def get_current_admin_user(
     current_user: User = Depends(get_current_user),
 ) -> User:
     if not current_user.superuser:
-        raise HTTPException(
-            status_code=status.HTTP_403_FORBIDDEN, detail="Not an admin user"
-        )
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Not an admin user")
     return current_user
 
 
