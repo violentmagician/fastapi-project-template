@@ -68,6 +68,11 @@ async def update_user_password(
     return user
 
 
+@router.get("/me/", response_model=UserResponse)
+async def my_profile(current_user: User = AuthenticatedUser):
+    return current_user
+
+
 @router.get(
     "/{user_id_or_username}/",
     response_model=UserResponse,
@@ -84,11 +89,6 @@ async def query_user(*, session: Session = ActiveSession, user_id_or_username: U
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
     return user.first()
-
-
-@router.get("/me/", response_model=UserResponse)
-async def my_profile(current_user: User = AuthenticatedUser):
-    return current_user
 
 
 @router.delete("/{user_id}/", dependencies=[AdminUser])
