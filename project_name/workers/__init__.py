@@ -1,4 +1,5 @@
 from celery import Celery
+
 from project_name.config import settings
 
 celery = Celery(__name__)

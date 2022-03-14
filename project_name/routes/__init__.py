@@ -2,8 +2,8 @@ from fastapi import APIRouter
 
 from .content import router as content_router
 from .security import router as security_router
-from .user import router as user_router
 from .tasks import router as task_router
+from .user import router as user_router
 
 main_router = APIRouter()
 
