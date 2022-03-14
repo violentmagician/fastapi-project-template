@@ -16,3 +16,6 @@ reload = false
 uri = "@jinja sqlite:///{{ this.current_env | lower }}.db"
 connect_args = {check_same_thread=false}
 echo = false
+
+[default.celery]
+broker_url = "redis://localhost:6379/0"

@@ -140,6 +140,12 @@ docker-ps: 	  ## Bring down docker dev environment
 docker-logs: 	  ## Bring down docker dev environment
 	@docker-compose -f docker-compose-dev.yaml -p project_name logs -f app
 
+.PHONY: celery-worker
+worker: 		## Create a Celery Worker
+	$(ENV_PREFIX)celery --app=project_name.workers.celery worker -l INFO
+
+
+
 # This project has been generated from rochacbruno/fastapi-project-template
 # __author__ = 'rochacbruno'
 # __repo__ = https://github.com/rochacbruno/fastapi-project-template
